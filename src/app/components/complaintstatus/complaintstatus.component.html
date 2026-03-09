@@ -1,0 +1,117 @@
+<div class="status-page">
+  <div class="status-wrap">
+
+    <div class="search-card">
+      <div class="search-icon-wrap">🔍</div>
+      <h2 class="search-title">Track Your Complaint</h2>
+      <p class="search-sub">Search by Complaint ID or Mobile Number</p>
+
+      <!-- Toggle Buttons -->
+      <div class="mode-toggle">
+        <button [class.active]="searchMode === 'id'" (click)="setMode('id')">
+          🆔 Complaint ID
+        </button>
+        <button [class.active]="searchMode === 'mobile'" (click)="setMode('mobile')">
+          📱 Mobile Number
+        </button>
+      </div>
+
+      <!-- ID Search -->
+      <div class="search-row" *ngIf="searchMode === 'id'">
+        <input class="search-input" type="text"
+          [(ngModel)]="searchId"
+          placeholder="e.g. CMP731173"
+          (keyup.enter)="checkStatus()">
+        <button class="search-btn" (click)="checkStatus()">Check →</button>
+      </div>
+
+      <!-- Mobile Search -->
+      <div class="search-row" *ngIf="searchMode === 'mobile'">
+        <input class="search-input" type="text"
+          [(ngModel)]="searchMobile"
+          placeholder="e.g. 9712808788"
+          maxlength="10"
+          (keyup.enter)="checkStatus()">
+        <button class="search-btn" (click)="checkStatus()">Check →</button>
+      </div>
+    </div>
+
+    <!-- RESULT — Single (ID search) -->
+    <div class="result-card" *ngIf="complaint">
+      <div class="result-top">
+        <span class="result-id">{{ complaint.id }}</span>
+        <span class="status-badge" [ngClass]="getBadgeClass(complaint.status)">
+          {{ complaint.status }}
+        </span>
+      </div>
+      <div class="result-grid">
+        <div class="result-item">
+          <span class="r-label">Name</span>
+          <span class="r-val">{{ complaint.name }}</span>
+        </div>
+        <div class="result-item">
+          <span class="r-label">Area</span>
+          <span class="r-val">{{ complaint.area }}</span>
+        </div>
+        <div class="result-item">
+          <span class="r-label">Type</span>
+          <span class="r-val">{{ complaint.type }}</span>
+        </div>
+        <div class="result-item">
+          <span class="r-label">Date Filed</span>
+          <span class="r-val">{{ complaint.date }}</span>
+        </div>
+        <div class="result-item full">
+          <span class="r-label">Description</span>
+          <span class="r-val">{{ complaint.description }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULTS — Multiple (Mobile search) -->
+    <div *ngIf="complaints.length > 0">
+      <div class="results-header">
+        ✅ {{ complaints.length }} complaint(s) found for {{ searchMobile }}
+      </div>
+      <div class="result-card" *ngFor="let c of complaints">
+        <div class="result-top">
+          <span class="result-id">{{ c.id }}</span>
+          <span class="status-badge" [ngClass]="getBadgeClass(c.status)">
+            {{ c.status }}
+          </span>
+        </div>
+        <div class="result-grid">
+          <div class="result-item">
+            <span class="r-label">Name</span>
+            <span class="r-val">{{ c.name }}</span>
+          </div>
+          <div class="result-item">
+            <span class="r-label">Area</span>
+            <span class="r-val">{{ c.area }}</span>
+          </div>
+          <div class="result-item">
+            <span class="r-label">Type</span>
+            <span class="r-val">{{ c.type }}</span>
+          </div>
+          <div class="result-item">
+            <span class="r-label">Date Filed</span>
+            <span class="r-val">{{ c.date }}</span>
+          </div>
+          <div class="result-item full">
+            <span class="r-label">Description</span>
+            <span class="r-val">{{ c.description }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOT FOUND -->
+    <div class="not-found" *ngIf="notFound">
+      <div class="not-found-icon">❌</div>
+      <h3>Complaint Not Found</h3>
+      <p *ngIf="searchMode === 'id'">No complaint found with ID <strong>{{ searchId }}</strong>.</p>
+      <p *ngIf="searchMode === 'mobile'">No complaints found for mobile <strong>{{ searchMobile }}</strong>.</p>
+    </div>
+
+  </div>
+</div>

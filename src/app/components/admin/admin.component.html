@@ -1,0 +1,325 @@
+<div class="admin-root">
+
+  <!-- LOGIN -->
+  <div class="admin-login-page" *ngIf="!loggedIn">
+    <div class="login-bg-grid"></div>
+    <div class="login-card">
+      <div class="login-logo">🛡️</div>
+      <h2 class="login-title">Admin Portal</h2>
+      <p class="login-sub">Surat Municipal Corporation — Restricted Access</p>
+      <div class="login-form">
+        <div class="lfield">
+          <label>Username</label>
+          <input type="text" [(ngModel)]="username" placeholder="admin" (keyup.enter)="login()">
+        </div>
+        <div class="lfield">
+          <label>Password</label>
+          <input type="password" [(ngModel)]="password" placeholder="••••••••" (keyup.enter)="login()">
+        </div>
+        <button class="login-btn" (click)="login()">Login to Dashboard →</button>
+        <div class="login-error" *ngIf="loginError">{{ loginError }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="admin-dashboard" *ngIf="loggedIn">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">🛡️</div>
+        <span class="brand-name">AdminPanel</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a class="snav-item" [class.active]="activeTab==='dashboard'" (click)="setTab('dashboard')">
+          <span>📊</span> Dashboard
+        </a>
+        <a class="snav-item" [class.active]="activeTab==='complaints'" (click)="setTab('complaints')">
+          <span>📋</span> Complaints
+          <span class="snav-badge">{{ total }}</span>
+        </a>
+        <a class="snav-item" [class.active]="activeTab==='analytics'" (click)="setTab('analytics')">
+          <span>📈</span> Analytics
+        </a>
+        <a class="snav-item" [class.active]="activeTab==='settings'" (click)="setTab('settings')">
+          <span>⚙️</span> Settings
+        </a>
+      </nav>
+      <div class="sidebar-user">
+        <div class="su-avatar">A</div>
+        <div class="su-info">
+          <span class="su-name">Admin</span>
+          <span class="su-role">Super Admin</span>
+        </div>
+        <button class="su-logout" (click)="logout()" title="Logout">⏻</button>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-content">
+
+      <!-- TOPBAR -->
+      <div class="topbar">
+        <div>
+          <h1 class="page-title">
+            {{ activeTab === 'dashboard' ? 'Dashboard Overview' :
+               activeTab === 'complaints' ? 'All Complaints' :
+               activeTab === 'analytics' ? 'Analytics' : 'Settings' }}
+          </h1>
+          <p class="page-sub">Surat Municipal Complaint Management</p>
+        </div>
+        <div class="date-chip">📅 {{ today }}</div>
+      </div>
+
+      <!-- ══════════ TAB: DASHBOARD ══════════ -->
+      <div *ngIf="activeTab === 'dashboard'">
+        <div class="stat-row">
+          <div class="dstat blue">
+            <div class="dstat-icon">📋</div>
+            <div class="dstat-body">
+              <div class="dstat-num">{{ total }}</div>
+              <div class="dstat-label">Total Complaints</div>
+            </div>
+            
+          </div>
+          <div class="dstat orange">
+            <div class="dstat-icon">⏳</div>
+            <div class="dstat-body">
+              <div class="dstat-num">{{ pending }}</div>
+              <div class="dstat-label">Pending</div>
+            </div>
+            
+          </div>
+          <div class="dstat purple">
+            <div class="dstat-icon">🔄</div>
+            <div class="dstat-body">
+              <div class="dstat-num">{{ inProgress }}</div>
+              <div class="dstat-label">In Progress</div>
+            </div>
+            
+          </div>
+          <div class="dstat green">
+            <div class="dstat-icon">✅</div>
+            <div class="dstat-body">
+              <div class="dstat-num">{{ resolved }}</div>
+              <div class="dstat-label">Resolved</div>
+            </div>
+            
+          </div>
+        </div>
+
+        <div class="charts-row">
+          <div class="chart-card">
+            <div class="chart-title">Status Distribution</div>
+            <div class="donut-wrap">
+              <svg viewBox="0 0 120 120" class="donut-svg">
+                <circle cx="60" cy="60" r="50" fill="none" stroke="#f0f2f8" stroke-width="18"/>
+                <circle cx="60" cy="60" r="50" fill="none" stroke="#10b981" stroke-width="18"
+                  [attr.stroke-dasharray]="(resolved/(total||1))*314+' 314'"
+                  stroke-dashoffset="78.5" stroke-linecap="round"/>
+                <circle cx="60" cy="60" r="50" fill="none" stroke="#f97316" stroke-width="18"
+                  [attr.stroke-dasharray]="(pending/(total||1))*314+' 314'"
+                  [attr.stroke-dashoffset]="78.5-(resolved/(total||1))*314"
+                  stroke-linecap="round"/>
+              </svg>
+              <div class="donut-center">
+                <span class="donut-num">{{ total }}</span>
+                <span class="donut-lbl">Total</span>
+              </div>
+            </div>
+            <div class="donut-legend">
+              <div class="dleg"><span class="dleg-dot green-dot"></span>Resolved ({{ resolved }})</div>
+              <div class="dleg"><span class="dleg-dot orange-dot"></span>Pending ({{ pending }})</div>
+              <div class="dleg"><span class="dleg-dot purple-dot"></span>In Progress ({{ inProgress }})</div>
+            </div>
+          </div>
+          <div class="chart-card flex1">
+            <div class="chart-title">Complaints by Category</div>
+            <div class="bar-chart" *ngIf="chartData.length > 0">
+              <div class="bar-item" *ngFor="let d of chartData">
+                <div class="bar-label">{{ d.label }}</div>
+                <div class="bar-track">
+                  <div class="bar-fill" [style.width.%]="getBarWidth(d.value)" [style.background]="d.color"></div>
+                </div>
+                <div class="bar-val">{{ d.value }}</div>
+              </div>
+            </div>
+            <div class="empty-chart" *ngIf="chartData.length === 0">
+              <span>📊</span><p>No data yet</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="rate-card" *ngIf="total > 0">
+          <div class="rate-label">📈 Overall Resolution Rate</div>
+          <div class="rate-track">
+            <div class="rate-fill" [style.width]="getResolutionRate()+'%'"></div>
+          </div>
+          <div class="rate-pct">{{ getResolutionRate() }}% resolved</div>
+        </div>
+
+        <!-- Recent 5 complaints -->
+        <div class="table-card">
+          <div class="table-top">
+            <div class="table-ttitle">🕐 Recent Complaints <span class="count-badge">{{ complaints.length }}</span></div>
+            <a class="view-all-btn" (click)="setTab('complaints')">View All →</a>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>#ID</th><th>Name</th><th>Type</th><th>Area</th><th>Date</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr *ngFor="let c of complaints.slice(0,5)">
+                  <td><span class="tid">{{ c.id }}</span></td>
+                  <td class="tfw">{{ c.name }}</td>
+                  <td><span class="ttype">{{ c.type }}</span></td>
+                  <td>{{ c.area }}</td>
+                  <td class="tdate">{{ c.date }}</td>
+                  <td><span class="status-badge" [ngClass]="getBadgeClass(c.status)">{{ c.status }}</span></td>
+                </tr>
+                <tr *ngIf="complaints.length === 0">
+                  <td colspan="6" class="tempty">No complaints yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ TAB: COMPLAINTS ══════════ -->
+      <div *ngIf="activeTab === 'complaints'">
+        <div class="table-card">
+          <div class="table-top">
+            <div class="table-ttitle">📋 All Complaints <span class="count-badge">{{ complaints.length }}</span></div>
+            <input class="tsearch" type="text" [(ngModel)]="searchQuery" placeholder="🔍 Search...">
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr><th>#ID</th><th>Name</th><th>Mobile</th><th>Area</th><th>Type</th><th>Description</th><th>Date</th><th>Status</th><th>Update</th><th>Delete</th></tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let c of filteredComplaints(); let i = index">
+                  <td><span class="tid">{{ c.id }}</span></td>
+                  <td class="tfw">{{ c.name }}</td>
+                  <td class="tmono">{{ c.mobile }}</td>
+                  <td>{{ c.area }}</td>
+                  <td><span class="ttype">{{ c.type }}</span></td>
+                  <td class="ttrunc">{{ c.description }}</td>
+                  <td class="tdate">{{ c.date }}</td>
+                  <td><span class="status-badge" [ngClass]="getBadgeClass(c.status)">{{ c.status }}</span></td>
+                  <td>
+                    <select class="tselect" [(ngModel)]="c.status" (change)="updateStatus(c)">
+                      <option>Pending</option>
+                      <option>In Progress</option>
+                      <option>Resolved</option>
+                    </select>
+                  </td>
+                  <td><button class="tdel" (click)="deleteComplaint(c, i)">🗑</button></td>
+                </tr>
+                <tr *ngIf="complaints.length === 0">
+                  <td colspan="10" class="tempty">No complaints registered yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ TAB: ANALYTICS ══════════ -->
+      <div *ngIf="activeTab === 'analytics'">
+        <div class="analytics-grid">
+
+          <div class="chart-card">
+            <div class="chart-title">📊 Complaints by Type</div>
+            <div class="big-bar-chart" *ngIf="chartData.length > 0">
+              <div class="big-bar-item" *ngFor="let d of chartData">
+                <div class="bbar-header">
+                  <span class="bbar-label">{{ d.label }}</span>
+                  <span class="bbar-num">{{ d.value }}</span>
+                </div>
+                <div class="bbar-track">
+                  <div class="bbar-fill" [style.width.%]="getBarWidth(d.value)" [style.background]="d.color"></div>
+                </div>
+              </div>
+            </div>
+            <div class="empty-chart" *ngIf="chartData.length === 0"><span>📊</span><p>No data</p></div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-title">📍 Complaints by Area</div>
+            <div class="big-bar-chart" *ngIf="areaData.length > 0">
+              <div class="big-bar-item" *ngFor="let d of areaData">
+                <div class="bbar-header">
+                  <span class="bbar-label">{{ d.label }}</span>
+                  <span class="bbar-num">{{ d.value }}</span>
+                </div>
+                <div class="bbar-track">
+                  <div class="bbar-fill" [style.width.%]="getBarWidth(d.value)" [style.background]="d.color"></div>
+                </div>
+              </div>
+            </div>
+            <div class="empty-chart" *ngIf="areaData.length === 0"><span>📍</span><p>No data</p></div>
+          </div>
+
+          <div class="chart-card span2">
+            <div class="chart-title">📈 Status Summary</div>
+            <div class="summary-stats">
+              <div class="sstat">
+                <div class="sstat-num blue-txt">{{ total }}</div>
+                <div class="sstat-label">Total Filed</div>
+              </div>
+              <div class="sstat">
+                <div class="sstat-num green-txt">{{ resolved }}</div>
+                <div class="sstat-label">Resolved</div>
+              </div>
+              <div class="sstat">
+                <div class="sstat-num orange-txt">{{ pending }}</div>
+                <div class="sstat-label">Pending</div>
+              </div>
+              <div class="sstat">
+                <div class="sstat-num purple-txt">{{ inProgress }}</div>
+                <div class="sstat-label">In Progress</div>
+              </div>
+              <div class="sstat">
+                <div class="sstat-num green-txt">{{ getResolutionRate() }}%</div>
+                <div class="sstat-label">Resolution Rate</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ TAB: SETTINGS ══════════ -->
+      <div *ngIf="activeTab === 'settings'">
+        <div class="settings-grid">
+          <div class="settings-card">
+            <div class="scard-icon">🔐</div>
+            <div class="scard-title">Admin Credentials</div>
+            <div class="scard-sub">Login: admin / admin123</div>
+            <div class="scard-info">Contact system admin to change credentials</div>
+          </div>
+          <div class="settings-card">
+            <div class="scard-icon">🗄️</div>
+            <div class="scard-title">Database</div>
+            <div class="scard-sub">Firebase Firestore + LocalStorage</div>
+            <div class="scard-info">Complaints are synced to Firebase in real-time</div>
+          </div>
+          <div class="settings-card">
+            <div class="scard-icon">🏙️</div>
+            <div class="scard-title">Portal Info</div>
+            <div class="scard-sub">Surat Municipal Corporation</div>
+            <div class="scard-info">complaint&#64;suratmunicipal.gov.in · 0261-2422725</div>
+          </div>
+          <div class="settings-card danger-card">
+            <div class="scard-icon">🗑️</div>
+            <div class="scard-title">Clear Local Data</div>
+            <div class="scard-sub">Remove all locally stored complaints</div>
+            <button class="danger-btn" (click)="clearLocal()">Clear LocalStorage</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>

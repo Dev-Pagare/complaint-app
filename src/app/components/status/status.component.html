@@ -1,0 +1,74 @@
+<div class="status-page">
+
+  <div class="status-hero">
+    <div class="hero-icon">🔍</div>
+    <h1 class="hero-title">Track Your Complaint</h1>
+    <p class="hero-sub">Enter your mobile number to find all your complaints and their current status</p>
+  </div>
+
+  <div class="search-card">
+    <label class="search-label">MOBILE NUMBER</label>
+    <div class="search-row">
+      <input
+        type="text"
+        class="search-input"
+        [(ngModel)]="mobile"
+        placeholder="Enter 10-digit mobile number"
+        maxlength="10"
+        (keyup.enter)="search()"
+      />
+      <button class="search-btn" (click)="search()">Search →</button>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="results-section" *ngIf="searched">
+
+    <!-- Found -->
+    <div *ngIf="results.length > 0">
+      <div class="results-header">
+        ✅ Found <strong>{{ results.length }}</strong> complaint(s) for {{ mobile }}
+        <span class="clear-link" (click)="clear()">Clear</span>
+      </div>
+
+      <div class="complaint-card" *ngFor="let c of results">
+        <div class="cc-top">
+          <div class="cc-id">{{ c.id }}</div>
+          <span class="status-badge" [ngClass]="getBadgeClass(c.status)">{{ c.status }}</span>
+        </div>
+        <div class="cc-grid">
+          <div class="cc-field">
+            <div class="cc-flabel">Name</div>
+            <div class="cc-fval">{{ c.name }}</div>
+          </div>
+          <div class="cc-field">
+            <div class="cc-flabel">Area</div>
+            <div class="cc-fval">{{ c.area }}</div>
+          </div>
+          <div class="cc-field">
+            <div class="cc-flabel">Type</div>
+            <div class="cc-fval">{{ c.type }}</div>
+          </div>
+          <div class="cc-field">
+            <div class="cc-flabel">Date</div>
+            <div class="cc-fval">{{ c.date }}</div>
+          </div>
+        </div>
+        <div class="cc-desc">
+          <div class="cc-flabel">Description</div>
+          <div class="cc-fval">{{ c.description }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Not Found -->
+    <div class="not-found" *ngIf="results.length === 0">
+      <div class="nf-icon">😕</div>
+      <div class="nf-title">No complaints found</div>
+      <div class="nf-sub">No complaints registered with mobile number <strong>{{ mobile }}</strong></div>
+      <button class="search-btn" (click)="clear()">Try Again</button>
+    </div>
+
+  </div>
+
+</div>

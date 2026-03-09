@@ -1,0 +1,234 @@
+<!-- HERO SECTION -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-badge">
+    <span>Surat Municipal Corporation</span> · Est. 2024
+  </div>
+  <h1 class="hero-title">
+    Surat Public<br><span class="highlight">Complaint Portal</span>
+  </h1>
+  <p class="hero-sub">
+    A transparent digital platform empowering Surat citizens to register,
+    track, and resolve civic complaints — efficiently and openly.
+  </p>
+  <div class="hero-actions">
+    <a routerLink="/complaint" class="btn-primary">📋 Register Complaint</a>
+    <a routerLink="/status" class="btn-secondary">🔍 Check Status</a>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- STATS SECTION -->
+<section class="stats-section">
+  <div class="stats-inner">
+    <div class="stat-card">
+      <div class="stat-num">{{ total }}</div>
+      <div class="stat-label">Total Complaints</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">{{ resolved }}</div>
+      <div class="stat-label">Resolved</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">{{ inProgress }}</div>
+      <div class="stat-label">In Progress</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">{{ pending }}</div>
+      <div class="stat-label">Pending</div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES SECTION -->
+<section class="categories-section">
+  <div class="section-header">
+    <div class="section-pill">📋 Categories</div>
+    <h2 class="section-title">Complaint Categories</h2>
+    <p class="section-sub">Click on a category to register your complaint directly</p>
+  </div>
+  <div class="categories-grid">
+
+    <div class="cat-card" (click)="goToComplaint('Road Issues')">
+      <div class="cat-icon-wrap">🛣️</div>
+      <div class="cat-name">Road Issues</div>
+      <div class="cat-desc">Potholes, damaged roads and traffic issues</div>
+      <span class="cat-badge badge-red">Most Reported</span>
+    </div>
+
+    <div class="cat-card" (click)="goToComplaint('Water Supply')">
+      <div class="cat-icon-wrap">💧</div>
+      <div class="cat-name">Water Supply</div>
+      <div class="cat-desc">Water leakage, low pressure and supply problems</div>
+      <span class="cat-badge badge-blue">Common</span>
+    </div>
+
+    <div class="cat-card" (click)="goToComplaint('Electricity')">
+      <div class="cat-icon-wrap">⚡</div>
+      <div class="cat-name">Electricity</div>
+      <div class="cat-desc">Street light and power related complaints</div>
+      <span class="cat-badge badge-orange">Urgent</span>
+    </div>
+
+    <div class="cat-card" (click)="goToComplaint('Cleanliness')">
+      <div class="cat-icon-wrap">🧹</div>
+      <div class="cat-name">Cleanliness</div>
+      <div class="cat-desc">Garbage collection and sanitation issues</div>
+      <span class="cat-badge badge-green">Daily</span>
+    </div>
+
+    <div class="cat-card" (click)="goToComplaint('Tax Issues')">
+      <div class="cat-icon-wrap">🏛️</div>
+      <div class="cat-name">Tax Issues</div>
+      <div class="cat-desc">Property tax and other tax resolve</div>
+      <span class="cat-badge badge-red">Most Reported</span>
+    </div>
+
+    <div class="cat-card" (click)="goToComplaint('Drainage')">
+      <div class="cat-icon-wrap">🚰</div>
+      <div class="cat-name">Drainage</div>
+      <div class="cat-desc">Blocked drains, sewage overflow and flooding</div>
+      <span class="cat-badge badge-orange">Urgent</span>
+    </div>
+
+    <div class="cat-card" (click)="goToComplaint('Illegal Construction')">
+      <div class="cat-icon-wrap">🏗️</div>
+      <div class="cat-name">Illegal Construction</div>
+      <div class="cat-desc">Unauthorized buildings and encroachment issues</div>
+      <span class="cat-badge badge-red">New</span>
+    </div>
+
+    <div class="cat-card" (click)="goToComplaint('Noise Pollution')">
+      <div class="cat-icon-wrap">🔊</div>
+      <div class="cat-name">Noise Pollution</div>
+      <div class="cat-desc">Excessive noise from vehicles, events or construction</div>
+      <span class="cat-badge badge-blue">Common</span>
+    </div>
+
+    <div class="cat-card" (click)="goToComplaint('Stray Animals')">
+      <div class="cat-icon-wrap">🐕</div>
+      <div class="cat-name">Stray Animals</div>
+      <div class="cat-desc">Stray dog or cattle menace and animal control</div>
+      <span class="cat-badge badge-green">Daily</span>
+    </div>
+
+    <div class="cat-card" (click)="goToComplaint('Public Health')">
+      <div class="cat-icon-wrap">🏥</div>
+      <div class="cat-name">Public Health</div>
+      <div class="cat-desc">Mosquito breeding, open defecation and health hazards</div>
+      <span class="cat-badge badge-orange">Urgent</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section">
+  <div class="section-header">
+    <div class="section-pill">⚙️ Process</div>
+    <h2 class="section-title">How It Works</h2>
+    <p class="section-sub">Simple 3-step process to get your issue resolved</p>
+  </div>
+  <div class="steps-grid">
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-title">Register</div>
+      <p class="step-desc">Fill out the complaint form with your details and describe the civic issue you're facing.</p>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-title">Track</div>
+      <p class="step-desc">Use your unique complaint ID to monitor the real-time status of your complaint.</p>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-title">Resolved</div>
+      <p class="step-desc">Our dedicated municipal team reviews and resolves your complaint promptly.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT US SECTION -->
+<section class="about-section" id="about-section">
+  <div class="section-header">
+    <div class="section-pill">🏛️ About Us</div>
+    <h2 class="section-title">About Surat Municipal Corporation</h2>
+    <p class="section-sub">Serving Surat citizens with dedication, transparency and technology since 1852</p>
+  </div>
+
+  <div class="about-cards">
+    <div class="about-card">
+      <div class="about-icon">🎯</div>
+      <h3>Our Mission</h3>
+      <p>To provide transparent, efficient and responsive civic services to all citizens of Surat. Every complaint deserves a swift resolution and every citizen deserves to be heard.</p>
+    </div>
+    <div class="about-card">
+      <div class="about-icon">🌟</div>
+      <h3>Our Vision</h3>
+      <p>To make Surat a Smart City where digital platforms empower citizens to actively participate in improving civic infrastructure and municipal services.</p>
+    </div>
+    <div class="about-card">
+      <div class="about-icon">🤝</div>
+      <h3>Our Values</h3>
+      <p>Transparency, Accountability, Speed and Citizen-First approach guide every decision we make in managing and resolving public complaints.</p>
+    </div>
+  </div>
+
+  <div class="about-stats-row">
+    <div class="about-stat">
+      <div class="about-stat-num">72+</div>
+      <div class="about-stat-label">Years of Service</div>
+    </div>
+    <div class="about-stat">
+      <div class="about-stat-num">50 Lakh+</div>
+      <div class="about-stat-label">Citizens Served</div>
+    </div>
+    <div class="about-stat">
+      <div class="about-stat-num">90%</div>
+      <div class="about-stat-label">Resolution Rate</div>
+    </div>
+    <div class="about-stat">
+      <div class="about-stat-num">48 Hrs</div>
+      <div class="about-stat-label">Avg Resolution Time</div>
+    </div>
+  </div>
+
+  <div class="about-contact-row">
+    <div class="about-contact-item">
+      <span>📧</span>
+      <p>complaint&#64;suratmunicipal.gov.in</p>
+    </div>
+    <div class="about-contact-item">
+      <span>📞</span>
+      <p>0261-2422725</p>
+    </div>
+    <div class="about-contact-item">
+      <span>📍</span>
+      <p>Muglisara, Surat – 395001, Gujarat</p>
+    </div>
+    <div class="about-contact-item">
+      <span>🕐</span>
+      <p>Mon–Sat: 10:00 AM – 6:00 PM</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="footer-logo">🏛️</span>
+      <span class="footer-name">ComplaintApp</span>
+    </div>
+    <p class="footer-copy">© 2024 Surat Municipal Corporation. All rights reserved.</p>
+    <div class="footer-links">
+      <a routerLink="/home">Home</a>
+      <a routerLink="/complaint">Complaint</a>
+      <a routerLink="/status">Status</a>
+      <a routerLink="/login">Login</a>
+    </div>
+  </div>
+</footer>

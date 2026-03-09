@@ -1,0 +1,29 @@
+.login-page {
+  min-height: 100vh; padding: 100px 40px 60px;
+  background: var(--surface-2);
+  display: flex; align-items: center; justify-content: center;
+}
+.auth-box {
+  background: var(--surface); border-radius: 20px; padding: 48px 40px;
+  box-shadow: var(--shadow-md); border: 1px solid var(--border);
+  width: 100%; max-width: 440px; text-align: center;
+}
+.auth-icon { font-size: 56px; margin-bottom: 16px; display: block; }
+.auth-title {
+  font-family: 'Sora', sans-serif; font-size: 26px; font-weight: 800;
+  letter-spacing: -0.5px; margin-bottom: 6px;
+}
+.auth-sub { font-size: 14px; color: var(--ink-muted); margin-bottom: 28px; }
+.auth-form { display: flex; flex-direction: column; gap: 16px; text-align: left; }
+.field-group { display: flex; flex-direction: column; gap: 8px; }
+.field-label { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+.full-btn { width: 100%; justify-content: center; margin-top: 4px; }
+.switch-text {
+  text-align: center; font-size: 14px;
+  color: var(--ink-muted); margin-top: 4px;
+}
+.switch-link {
+  color: var(--accent); font-weight: 600;
+  cursor: pointer; text-decoration: underline;
+}
+.switch-link:hover { color: #1648c0; }

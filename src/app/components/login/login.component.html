@@ -1,0 +1,78 @@
+<div class="login-page">
+
+  <!-- LOGIN FORM -->
+  <div class="auth-box" *ngIf="!showRegister">
+    <div class="auth-icon">🔐</div>
+    <h2 class="auth-title">Welcome Back</h2>
+    <p class="auth-sub">Login to track your complaints</p>
+    <div class="auth-form">
+      <div class="field-group">
+        <label class="field-label">Mobile Number</label>
+        <input class="field-input" type="text"
+          [(ngModel)]="mobile" placeholder="Enter mobile number">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Password</label>
+        <input class="field-input" type="password"
+          [(ngModel)]="password" placeholder="Enter password">
+      </div>
+      <button class="submit-btn full-btn" (click)="login()">
+        Login →
+      </button>
+      <p class="switch-text">
+        New user?
+        <span class="switch-link" (click)="showRegister = true">
+          Register here
+        </span>
+      </p>
+    </div>
+  </div>
+
+  <!-- REGISTER FORM -->
+  <div class="auth-box" *ngIf="showRegister">
+    <div class="auth-icon">📝</div>
+    <h2 class="auth-title">Create Account</h2>
+    <p class="auth-sub">Register to get started</p>
+    <div class="auth-form">
+      <div class="field-group">
+        <label class="field-label">Full Name</label>
+        <input class="field-input" type="text"
+          [(ngModel)]="regName" placeholder="Enter your name">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Mobile Number</label>
+        <input class="field-input" type="text"
+          [(ngModel)]="regMobile" placeholder="Enter mobile number">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Area</label>
+        <select class="field-select" [(ngModel)]="regArea">
+          <option value="">Select area</option>
+          <option>Varachha</option>
+          <option>Katargam</option>
+          <option>Adajan</option>
+          <option>Piplod</option>
+          <option>Althan</option>
+          <option>Citylight</option>
+          <option>Udhna</option>
+          <option>Rander</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Password</label>
+        <input class="field-input" type="password"
+          [(ngModel)]="regPassword" placeholder="Create password">
+      </div>
+      <button class="submit-btn full-btn" (click)="register()">
+        Register →
+      </button>
+      <p class="switch-text">
+        Already have account?
+        <span class="switch-link" (click)="showRegister = false">
+          Login here
+        </span>
+      </p>
+    </div>
+  </div>
+
+</div>

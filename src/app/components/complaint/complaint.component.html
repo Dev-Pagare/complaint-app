@@ -1,0 +1,137 @@
+<!-- SUCCESS SCREEN -->
+<div class="success-page" *ngIf="submitted">
+  <div class="success-card">
+    <div class="success-icon">✅</div>
+    <h2>Complaint Submitted!</h2>
+    <p>Your complaint has been registered successfully.</p>
+    <div class="complaint-id-box">
+      <span class="id-label">Your Complaint ID</span>
+      <span class="id-value">{{ generatedId }}</span>
+    </div>
+    <p class="id-note">📌 Save this ID to track your complaint status.</p>
+    <div class="success-btns">
+      <a routerLink="/status" class="btn-track">🔍 Track Status</a>
+      <a routerLink="/home" class="btn-home">🏠 Go Home</a>
+    </div>
+  </div>
+</div>
+
+<!-- COMPLAINT FORM -->
+<div class="complaint-page" *ngIf="!submitted">
+  <div class="complaint-card">
+
+    <!-- HEADER -->
+    <div class="form-header">
+      <div class="form-header-icon">📋</div>
+      <div>
+        <h2>Register Your Complaint</h2>
+        <p>Fill in the details below. We'll route your issue to the right department.</p>
+      </div>
+    </div>
+
+    <!-- ERROR -->
+    <div class="error-box" *ngIf="errorMsg">
+      ⚠️ {{ errorMsg }}
+    </div>
+
+    <!-- ROW 1: Name + Mobile -->
+    <div class="form-row">
+      <div class="form-group">
+        <label>FULL NAME <span class="req">*</span></label>
+        <input
+          type="text"
+          [(ngModel)]="name"
+          name="name"
+          placeholder="e.g. Dev Pagare"
+          class="form-input"
+        />
+      </div>
+      <div class="form-group">
+        <label>MOBILE NUMBER <span class="req">*</span></label>
+        <input
+          type="tel"
+          [(ngModel)]="mobile"
+          name="mobile"
+          placeholder="10-digit mobile number"
+          maxlength="10"
+          class="form-input"
+        />
+      </div>
+    </div>
+
+    <!-- ROW 2: Area + Type -->
+    <div class="form-row">
+      <div class="form-group">
+        <label>AREA / WARD <span class="req">*</span></label>
+        <select [(ngModel)]="area" name="area" class="form-select">
+          <option value="">Select your area</option>
+          <option value="Adajan">Adajan</option>
+          <option value="Athwa">Athwa</option>
+          <option value="Katargam">Katargam</option>
+          <option value="Limbayat">Limbayat</option>
+          <option value="Majura">Majura</option>
+          <option value="Olpad">Olpad</option>
+          <option value="Rander">Rander</option>
+          <option value="Udhna">Udhna</option>
+          <option value="Pandesara">Pandesara</option>
+          <option value="Varachha">Varachha</option>
+          <option value="Chowk Bazaar">Chowk Bazaar</option>
+          <option value="Puna">Puna</option>
+          <option value="Salabatpura">Salabatpura</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>COMPLAINT TYPE <span class="req">*</span></label>
+        <select [(ngModel)]="type" name="type" class="form-select">
+          <option value="">Select type</option>
+          <option value="Road Issues">Road Issues</option>
+          <option value="Water Supply">Water Supply</option>
+          <option value="Electricity">Electricity</option>
+          <option value="Cleanliness">Cleanliness</option>
+          <option value="Tax Issues">Tax Issues</option>
+          <option value="Drainage">Drainage</option>
+          <option value="Illegal Construction">Illegal Construction</option>
+          <option value="Noise Pollution">Noise Pollution</option>
+          <option value="Stray Animals">Stray Animals</option>
+          <option value="Public Health">Public Health</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- DESCRIPTION -->
+    <div class="form-group full">
+      <label>DESCRIPTION <span class="req">*</span></label>
+      <textarea
+        [(ngModel)]="description"
+        name="description"
+        placeholder="Describe your complaint in detail..."
+        rows="4"
+        class="form-textarea"
+      ></textarea>
+    </div>
+
+    <!-- PHOTO UPLOAD -->
+    <div class="form-group full">
+      <label>COMPLAINT PHOTO <span class="optional">(Optional)</span></label>
+      <div class="photo-upload" (click)="photoInput.click()">
+        <input #photoInput type="file" accept="image/*" (change)="onPhotoSelect($event)" hidden />
+        <div *ngIf="!photoPreview" class="photo-placeholder">
+          <span>📷</span>
+          <p>Click to upload photo</p>
+        </div>
+        <img *ngIf="photoPreview" [src]="photoPreview" class="photo-preview" alt="preview" />
+      </div>
+    </div>
+
+    <!-- SUBMIT BUTTON -->
+    <button
+      class="submit-btn"
+      (click)="submitComplaint()"
+      [disabled]="loading"
+    >
+      <span *ngIf="!loading">Submit Complaint →</span>
+      <span *ngIf="loading">⏳ Submitting...</span>
+    </button>
+
+  </div>
+</div>
