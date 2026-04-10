@@ -1,4 +1,4 @@
-<div class="status-page">
+﻿<div class="status-page">
   <div class="status-wrap">
 
     <div class="search-card">
@@ -6,7 +6,7 @@
       <h2 class="search-title">Track Your Complaint</h2>
       <p class="search-sub">Search by Complaint ID or Mobile Number</p>
 
-      <!-- Toggle Buttons -->
+      
       <div class="mode-toggle">
         <button [class.active]="searchMode === 'id'" (click)="setMode('id')">
           🆔 Complaint ID
@@ -16,7 +16,7 @@
         </button>
       </div>
 
-      <!-- ID Search -->
+      
       <div class="search-row" *ngIf="searchMode === 'id'">
         <input class="search-input" type="text"
           [(ngModel)]="searchId"
@@ -25,25 +25,43 @@
         <button class="search-btn" (click)="checkStatus()">Check →</button>
       </div>
 
-      <!-- Mobile Search -->
+      
       <div class="search-row" *ngIf="searchMode === 'mobile'">
-        <input class="search-input" type="text"
+        <input class="search-input" type="tel"
           [(ngModel)]="searchMobile"
           placeholder="e.g. 9712808788"
-          maxlength="10"
+          onlyTenDigits
           (keyup.enter)="checkStatus()">
         <button class="search-btn" (click)="checkStatus()">Check →</button>
       </div>
     </div>
 
-    <!-- RESULT — Single (ID search) -->
+    
     <div class="result-card" *ngIf="complaint">
       <div class="result-top">
-        <span class="result-id">{{ complaint.id }}</span>
+        <div class="result-top-left">
+          <span class="result-id">{{ complaint.id }}</span>
+          <span class="live-badge">🔴 LIVE</span>
+        </div>
         <span class="status-badge" [ngClass]="getBadgeClass(complaint.status)">
           {{ complaint.status }}
         </span>
       </div>
+
+      
+      <div class="meta-row">
+        <div class="priority-chip" *ngIf="complaint.priority"
+             [style.background]="getPriorityColor(complaint.priority) + '18'"
+             [style.color]="getPriorityColor(complaint.priority)"
+             [style.border-color]="getPriorityColor(complaint.priority) + '44'">
+          {{ complaint.priority === 'Low' ? '🟢' : complaint.priority === 'Medium' ? '🟡' : complaint.priority === 'High' ? '🟠' : '🔴' }}
+          {{ complaint.priority }} Priority
+        </div>
+        <div class="due-chip" *ngIf="complaint.dueDate">
+          📅 Due: {{ complaint.dueDate }}
+        </div>
+      </div>
+
       <div class="result-grid">
         <div class="result-item">
           <span class="r-label">Name</span>
@@ -65,21 +83,62 @@
           <span class="r-label">Description</span>
           <span class="r-val">{{ complaint.description }}</span>
         </div>
+
+        
+        <div class="result-item full" *ngIf="complaint.photoUrl">
+          <span class="r-label">📷 Complaint Photo</span>
+          <img [src]="complaint.photoUrl" class="complaint-photo" alt="Complaint Photo" />
+        </div>
+
+        
+        <div class="result-item full" *ngIf="complaint.latLng || complaint.locationText">
+          <span class="r-label">📍 Location</span>
+          <span class="r-val" *ngIf="complaint.locationText">{{ complaint.locationText }}</span>
+          <a class="map-link" *ngIf="complaint.latLng"
+             [href]="'https://maps.google.com/?q=' + complaint.latLng.lat + ',' + complaint.latLng.lng"
+             target="_blank">
+            🗺️ View on Google Maps
+          </a>
+          <div class="map-frame" *ngIf="complaint.latLng">
+            <iframe [src]="getMapUrl(complaint.latLng) | trustUrl"
+              width="100%" height="160" style="border:0; border-radius:10px; margin-top:8px;"
+              allowfullscreen loading="lazy">
+            </iframe>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- RESULTS — Multiple (Mobile search) -->
+    
     <div *ngIf="complaints.length > 0">
       <div class="results-header">
         ✅ {{ complaints.length }} complaint(s) found for {{ searchMobile }}
       </div>
-      <div class="result-card" *ngFor="let c of complaints">
+      <div class="result-card" *ngFor="let c of complaints" style="margin-bottom:16px;">
         <div class="result-top">
-          <span class="result-id">{{ c.id }}</span>
+          <div class="result-top-left">
+            <span class="result-id">{{ c.id }}</span>
+            <span class="live-badge">🔴 LIVE</span>
+          </div>
           <span class="status-badge" [ngClass]="getBadgeClass(c.status)">
             {{ c.status }}
           </span>
         </div>
+
+        
+        <div class="meta-row">
+          <div class="priority-chip" *ngIf="c.priority"
+               [style.background]="getPriorityColor(c.priority) + '18'"
+               [style.color]="getPriorityColor(c.priority)"
+               [style.border-color]="getPriorityColor(c.priority) + '44'">
+            {{ c.priority === 'Low' ? '🟢' : c.priority === 'Medium' ? '🟡' : c.priority === 'High' ? '🟠' : '🔴' }}
+            {{ c.priority }} Priority
+          </div>
+          <div class="due-chip" *ngIf="c.dueDate">
+            📅 Due: {{ c.dueDate }}
+          </div>
+        </div>
+
         <div class="result-grid">
           <div class="result-item">
             <span class="r-label">Name</span>
@@ -101,11 +160,28 @@
             <span class="r-label">Description</span>
             <span class="r-val">{{ c.description }}</span>
           </div>
+
+          
+          <div class="result-item full" *ngIf="c.photoUrl">
+            <span class="r-label">📷 Complaint Photo</span>
+            <img [src]="c.photoUrl" class="complaint-photo" alt="Complaint Photo" />
+          </div>
+
+          
+          <div class="result-item full" *ngIf="c.latLng || c.locationText">
+            <span class="r-label">📍 Location</span>
+            <span class="r-val" *ngIf="c.locationText">{{ c.locationText }}</span>
+            <a class="map-link" *ngIf="c.latLng"
+               [href]="'https://maps.google.com/?q=' + c.latLng.lat + ',' + c.latLng.lng"
+               target="_blank">
+              🗺️ View on Google Maps
+            </a>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- NOT FOUND -->
+    
     <div class="not-found" *ngIf="notFound">
       <div class="not-found-icon">❌</div>
       <h3>Complaint Not Found</h3>

@@ -1,78 +1,113 @@
-<div class="login-page">
+﻿<div class="auth-page">
+  <div class="auth-card">
 
-  <!-- LOGIN FORM -->
-  <div class="auth-box" *ngIf="!showRegister">
-    <div class="auth-icon">🔐</div>
-    <h2 class="auth-title">Welcome Back</h2>
-    <p class="auth-sub">Login to track your complaints</p>
-    <div class="auth-form">
-      <div class="field-group">
-        <label class="field-label">Mobile Number</label>
-        <input class="field-input" type="text"
-          [(ngModel)]="mobile" placeholder="Enter mobile number">
+    
+    <div class="brand-header">
+      <div class="brand-icon-wrap">🏛️</div>
+      <h2 class="brand-title" *ngIf="isLoginMode">Welcome Back!</h2>
+      <h2 class="brand-title" *ngIf="!isLoginMode">Create Account</h2>
+      <p class="brand-sub" *ngIf="isLoginMode">Sign in to your SMC Complaint Portal account</p>
+      <p class="brand-sub" *ngIf="!isLoginMode">Register to file complaints with SMC</p>
+    </div>
+
+    
+    <div *ngIf="isLoginMode">
+      <div class="form-group">
+        <label>Email Address</label>
+        <div class="input-wrapper">
+          <input type="email" [(ngModel)]="loginData.email" placeholder="yourname@example.com"
+            (keyup.enter)="onLogin()" />
+        </div>
       </div>
-      <div class="field-group">
-        <label class="field-label">Password</label>
-        <input class="field-input" type="password"
-          [(ngModel)]="password" placeholder="Enter password">
+
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-wrapper">
+          <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="loginData.password"
+            placeholder="Enter your password" (keyup.enter)="onLogin()" />
+          <span class="eye-icon" (click)="showPassword = !showPassword">
+            {{ showPassword ? 'HIDE' : 'SHOW' }}
+          </span>
+        </div>
       </div>
-      <button class="submit-btn full-btn" (click)="login()">
-        Login →
+
+      <div class="forgot-row">
+        <a routerLink="/forgot-password">Forgot Password?</a>
+      </div>
+
+      <div *ngIf="errorMessage" class="alert alert-error">{{ errorMessage }}</div>
+      <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+
+      <button class="btn-primary" (click)="onLogin()" [disabled]="isLoading">
+        <span *ngIf="!isLoading">🔐 Login to Account</span>
+        <span *ngIf="isLoading">Signing in...</span>
       </button>
+
       <p class="switch-text">
-        New user?
-        <span class="switch-link" (click)="showRegister = true">
-          Register here
-        </span>
+        Don't have an account?
+        <span (click)="switchMode('register')">Register here →</span>
       </p>
     </div>
-  </div>
 
-  <!-- REGISTER FORM -->
-  <div class="auth-box" *ngIf="showRegister">
-    <div class="auth-icon">📝</div>
-    <h2 class="auth-title">Create Account</h2>
-    <p class="auth-sub">Register to get started</p>
-    <div class="auth-form">
-      <div class="field-group">
-        <label class="field-label">Full Name</label>
-        <input class="field-input" type="text"
-          [(ngModel)]="regName" placeholder="Enter your name">
+    
+    <div *ngIf="!isLoginMode">
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>Full Name <span class="req">*</span></label>
+          <div class="input-wrapper">
+            <input type="text" [(ngModel)]="registerData.fullName" placeholder="Your full name" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Mobile Number <span class="req">*</span></label>
+          <div class="input-wrapper">
+            <input type="tel" [(ngModel)]="registerData.mobile" placeholder="9XXXXXXXXX" maxlength="10" />
+          </div>
+        </div>
       </div>
-      <div class="field-group">
-        <label class="field-label">Mobile Number</label>
-        <input class="field-input" type="text"
-          [(ngModel)]="regMobile" placeholder="Enter mobile number">
+
+      <div class="form-group">
+        <label>Email Address <span class="req">*</span></label>
+        <div class="input-wrapper">
+          <input type="email" [(ngModel)]="registerData.email" placeholder="yourname@example.com" />
+        </div>
       </div>
-      <div class="field-group">
-        <label class="field-label">Area</label>
-        <select class="field-select" [(ngModel)]="regArea">
-          <option value="">Select area</option>
-          <option>Varachha</option>
-          <option>Katargam</option>
-          <option>Adajan</option>
-          <option>Piplod</option>
-          <option>Althan</option>
-          <option>Citylight</option>
-          <option>Udhna</option>
-          <option>Rander</option>
-        </select>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>Password <span class="req">*</span></label>
+          <div class="input-wrapper">
+            <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="registerData.password"
+              placeholder="Min. 6 characters" />
+            <span class="eye-icon" (click)="showPassword = !showPassword">
+              {{ showPassword ? 'HIDE' : 'SHOW' }}
+            </span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Area / Ward <span class="req">*</span></label>
+          <div class="input-wrapper select-wrapper">
+            <select [(ngModel)]="registerData.area">
+              <option value="">-- Select Area --</option>
+              <option *ngFor="let area of suratAreas" [value]="area">{{ area }}</option>
+            </select>
+          </div>
+        </div>
       </div>
-      <div class="field-group">
-        <label class="field-label">Password</label>
-        <input class="field-input" type="password"
-          [(ngModel)]="regPassword" placeholder="Create password">
-      </div>
-      <button class="submit-btn full-btn" (click)="register()">
-        Register →
+
+      <div *ngIf="errorMessage" class="alert alert-error">{{ errorMessage }}</div>
+      <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+
+      <button class="btn-primary" (click)="onRegister()" [disabled]="isLoading">
+        <span *ngIf="!isLoading">✅ Create Account →</span>
+        <span *ngIf="isLoading">Creating account...</span>
       </button>
+
       <p class="switch-text">
-        Already have account?
-        <span class="switch-link" (click)="showRegister = false">
-          Login here
-        </span>
+        Already have an account?
+        <span (click)="switchMode('login')">Login here →</span>
       </p>
     </div>
-  </div>
 
+  </div>
 </div>

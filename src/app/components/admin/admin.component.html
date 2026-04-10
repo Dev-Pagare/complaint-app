@@ -1,6 +1,15 @@
 <div class="admin-root">
 
-  <!-- LOGIN -->
+  <div class="photo-modal" *ngIf="selectedPhoto" (click)="closePhoto()">
+    <div class="photo-modal-inner" (click)="$event.stopPropagation()">
+      <button class="photo-modal-close" (click)="closePhoto()">✕</button>
+      <img [src]="selectedPhoto" alt="Complaint Photo" class="photo-modal-img" />
+    </div>
+  </div>
+
+  
+  
+  
   <div class="admin-login-page" *ngIf="!loggedIn">
     <div class="login-bg-grid"></div>
     <div class="login-card">
@@ -22,10 +31,12 @@
     </div>
   </div>
 
-  <!-- DASHBOARD -->
+  
+  
+  
   <div class="admin-dashboard" *ngIf="loggedIn">
 
-    <!-- SIDEBAR -->
+    
     <aside class="sidebar">
       <div class="sidebar-brand">
         <div class="brand-icon">🛡️</div>
@@ -38,6 +49,11 @@
         <a class="snav-item" [class.active]="activeTab==='complaints'" (click)="setTab('complaints')">
           <span>📋</span> Complaints
           <span class="snav-badge">{{ total }}</span>
+        </a>
+        <a class="snav-item" [class.active]="activeTab==='messages'" (click)="setTab('messages')">
+          <span>✉️</span> Messages
+          <span class="snav-badge" *ngIf="unreadCount > 0"
+                style="background:#ef4444;">{{ unreadCount }}</span>
         </a>
         <a class="snav-item" [class.active]="activeTab==='analytics'" (click)="setTab('analytics')">
           <span>📈</span> Analytics
@@ -56,23 +72,24 @@
       </div>
     </aside>
 
-    <!-- MAIN -->
+    
     <main class="main-content">
 
-      <!-- TOPBAR -->
+      
       <div class="topbar">
         <div>
           <h1 class="page-title">
-            {{ activeTab === 'dashboard' ? 'Dashboard Overview' :
-               activeTab === 'complaints' ? 'All Complaints' :
-               activeTab === 'analytics' ? 'Analytics' : 'Settings' }}
+            {{ activeTab === 'dashboard'  ? 'Dashboard Overview'   :
+               activeTab === 'complaints' ? 'All Complaints'       :
+               activeTab === 'messages'   ? 'Contact Messages'     :
+               activeTab === 'analytics'  ? 'Analytics'            : 'Settings' }}
           </h1>
           <p class="page-sub">Surat Municipal Complaint Management</p>
         </div>
         <div class="date-chip">📅 {{ today }}</div>
       </div>
 
-      <!-- ══════════ TAB: DASHBOARD ══════════ -->
+      
       <div *ngIf="activeTab === 'dashboard'">
         <div class="stat-row">
           <div class="dstat blue">
@@ -81,7 +98,6 @@
               <div class="dstat-num">{{ total }}</div>
               <div class="dstat-label">Total Complaints</div>
             </div>
-            
           </div>
           <div class="dstat orange">
             <div class="dstat-icon">⏳</div>
@@ -89,7 +105,6 @@
               <div class="dstat-num">{{ pending }}</div>
               <div class="dstat-label">Pending</div>
             </div>
-            
           </div>
           <div class="dstat purple">
             <div class="dstat-icon">🔄</div>
@@ -97,7 +112,6 @@
               <div class="dstat-num">{{ inProgress }}</div>
               <div class="dstat-label">In Progress</div>
             </div>
-            
           </div>
           <div class="dstat green">
             <div class="dstat-icon">✅</div>
@@ -105,7 +119,13 @@
               <div class="dstat-num">{{ resolved }}</div>
               <div class="dstat-label">Resolved</div>
             </div>
-            
+          </div>
+          <div class="dstat red" (click)="setTab('messages')" style="cursor:pointer">
+            <div class="dstat-icon">✉️</div>
+            <div class="dstat-body">
+              <div class="dstat-num">{{ unreadCount }}</div>
+              <div class="dstat-label">Unread Messages</div>
+            </div>
           </div>
         </div>
 
@@ -159,7 +179,6 @@
           <div class="rate-pct">{{ getResolutionRate() }}% resolved</div>
         </div>
 
-        <!-- Recent 5 complaints -->
         <div class="table-card">
           <div class="table-top">
             <div class="table-ttitle">🕐 Recent Complaints <span class="count-badge">{{ complaints.length }}</span></div>
@@ -167,13 +186,22 @@
           </div>
           <div class="table-scroll">
             <table>
-              <thead><tr><th>#ID</th><th>Name</th><th>Type</th><th>Area</th><th>Date</th><th>Status</th></tr></thead>
+              <thead>
+                <tr><th>#ID</th><th>Name</th><th>Type</th><th>Priority</th><th>Date</th><th>Status</th></tr>
+              </thead>
               <tbody>
                 <tr *ngFor="let c of complaints.slice(0,5)">
                   <td><span class="tid">{{ c.id }}</span></td>
                   <td class="tfw">{{ c.name }}</td>
                   <td><span class="ttype">{{ c.type }}</span></td>
-                  <td>{{ c.area }}</td>
+                  <td>
+                    <span *ngIf="c.priority" class="priority-badge"
+                          [style.background]="getPriorityColor(c.priority) + '20'"
+                          [style.color]="getPriorityColor(c.priority)"
+                          style="font-size: 0.7rem; padding: 2px 6px; border-radius: 6px; font-weight: 700;">
+                      {{ c.priority }}
+                    </span>
+                  </td>
                   <td class="tdate">{{ c.date }}</td>
                   <td><span class="status-badge" [ngClass]="getBadgeClass(c.status)">{{ c.status }}</span></td>
                 </tr>
@@ -184,9 +212,35 @@
             </table>
           </div>
         </div>
+
+        <div class="table-card" style="margin-top:1.25rem" *ngIf="messages.length > 0">
+          <div class="table-top">
+            <div class="table-ttitle">
+              ✉️ Recent Messages
+              <span class="count-badge">{{ messages.length }}</span>
+              <span *ngIf="unreadCount > 0"
+                    style="background:#ef4444;color:white;padding:2px 8px;border-radius:12px;font-size:0.75rem;margin-left:6px">
+                {{ unreadCount }} unread
+              </span>
+            </div>
+            <a class="view-all-btn" (click)="setTab('messages')">View All →</a>
+          </div>
+          <div *ngFor="let m of messages.slice(0,3)" class="msg-preview-row">
+            <div class="msg-avatar-sm"
+                 [style.background]="m.status === 'unread' ? '#1565c0' : '#94a3b8'">
+              {{ m.name?.charAt(0)?.toUpperCase() }}
+            </div>
+            <div class="msg-preview-info">
+              <span class="msg-preview-name">{{ m.name }}</span>
+              <span *ngIf="m.status === 'unread'" class="new-badge">NEW</span>
+              <span class="msg-preview-sub">{{ m.subject }}</span>
+            </div>
+            <span class="msg-preview-date">{{ m.date }}</span>
+          </div>
+        </div>
       </div>
 
-      <!-- ══════════ TAB: COMPLAINTS ══════════ -->
+      
       <div *ngIf="activeTab === 'complaints'">
         <div class="table-card">
           <div class="table-top">
@@ -196,24 +250,48 @@
           <div class="table-scroll">
             <table>
               <thead>
-                <tr><th>#ID</th><th>Name</th><th>Mobile</th><th>Area</th><th>Type</th><th>Description</th><th>Date</th><th>Status</th><th>Update</th><th>Delete</th></tr>
+                <tr>
+                  <th>#ID</th><th>Name</th><th>Area</th>
+                  <th>Type</th><th>Priority</th><th>Date</th>
+                  <th>Status</th><th>Due Date</th><th>Photo</th><th>Delete</th>
+                </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let c of filteredComplaints(); let i = index">
                   <td><span class="tid">{{ c.id }}</span></td>
-                  <td class="tfw">{{ c.name }}</td>
-                  <td class="tmono">{{ c.mobile }}</td>
+                  <td class="tfw">
+                    {{ c.name }}<br/>
+                    <small class="tmono">{{ c.mobile }}</small>
+                  </td>
                   <td>{{ c.area }}</td>
                   <td><span class="ttype">{{ c.type }}</span></td>
-                  <td class="ttrunc">{{ c.description }}</td>
+                  <td>
+                    <span *ngIf="c.priority" class="priority-badge"
+                          [style.background]="getPriorityColor(c.priority) + '20'"
+                          [style.color]="getPriorityColor(c.priority)"
+                          style="font-size: 0.75rem; padding: 2px 6px; border-radius: 6px; font-weight: 700;">
+                      {{ c.priority }}
+                    </span>
+                    <span *ngIf="!c.priority">-</span>
+                  </td>
                   <td class="tdate">{{ c.date }}</td>
-                  <td><span class="status-badge" [ngClass]="getBadgeClass(c.status)">{{ c.status }}</span></td>
                   <td>
                     <select class="tselect" [(ngModel)]="c.status" (change)="updateStatus(c)">
                       <option>Pending</option>
                       <option>In Progress</option>
                       <option>Resolved</option>
                     </select>
+                  </td>
+                  <td>
+                    <input type="date" class="due-date-input" [value]="c.dueDate || ''" (change)="updateDueDate(c, $event)" title="Set due date" />
+
+                  </td>
+                  <td>
+                    <button *ngIf="c.photoUrl" class="photo-thumb-btn" (click)="openPhoto(c.photoUrl)">
+                      <img [src]="c.photoUrl" alt="photo"
+                           style="width:48px;height:48px;object-fit:cover;border-radius:8px;border:1px solid #e2e8f0;" />
+                    </button>
+                    <span *ngIf="!c.photoUrl" style="color:#94a3b8;font-size:0.8rem;">—</span>
                   </td>
                   <td><button class="tdel" (click)="deleteComplaint(c, i)">🗑</button></td>
                 </tr>
@@ -226,10 +304,93 @@
         </div>
       </div>
 
-      <!-- ══════════ TAB: ANALYTICS ══════════ -->
+      
+      <div *ngIf="activeTab === 'messages'">
+        <div class="table-card">
+          <div class="table-top">
+            <div class="table-ttitle">
+              ✉️ Contact Messages
+              <span class="count-badge">{{ messages.length }}</span>
+              <span *ngIf="unreadCount > 0"
+                    style="background:#ef4444;color:white;padding:2px 8px;border-radius:12px;font-size:0.75rem;margin-left:6px">
+                {{ unreadCount }} unread
+              </span>
+            </div>
+            <button *ngIf="unreadCount > 0" class="mark-all-btn" (click)="markAllRead()">
+              ✓ Mark All Read
+            </button>
+          </div>
+
+          <div *ngIf="messages.length === 0" class="msg-empty">
+            <div class="msg-empty-icon">📭</div>
+            <p>No messages yet.</p>
+            <span>Messages from Contact Us page will appear here.</span>
+          </div>
+
+          <div *ngFor="let m of messages; let i = index" class="msg-list-item">
+            <div class="msg-row" [class.msg-unread]="m.status === 'unread'"
+                 (click)="toggleMessage(m)">
+              <div class="msg-left">
+                <div class="msg-avatar" [style.background]="m.status === 'unread' ? '#1565c0' : '#94a3b8'">
+                  {{ m.name?.charAt(0)?.toUpperCase() }}
+                </div>
+                <div class="msg-info">
+                  <div class="msg-name-row">
+                    <span class="msg-name">{{ m.name }}</span>
+                    <span *ngIf="m.status === 'unread'" class="new-badge">NEW</span>
+                  </div>
+                  <div class="msg-email">{{ m.email }}</div>
+                  <div class="msg-subject">📌 {{ m.subject }}</div>
+                </div>
+              </div>
+              <div class="msg-right">
+                <div class="msg-date">{{ m.date }}</div>
+                <div class="msg-actions">
+                  <button class="reply-btn"
+                          (click)="replyViaEmail(m.email, m.name, m.subject); $event.stopPropagation()">
+                    📧 Reply
+                  </button>
+                  <button class="tdel"
+                          (click)="deleteMessage(m, i); $event.stopPropagation()">
+                    🗑
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="msg-body" *ngIf="activeMessageId === m._docId">
+              <div class="msg-body-inner">
+                <div class="msg-detail-row">
+                  <span class="msg-detail-label">📞 Phone</span>
+                  <span class="msg-detail-val">{{ m.phone || 'N/A' }}</span>
+                </div>
+                <div class="msg-detail-row">
+                  <span class="msg-detail-label">📌 Subject</span>
+                  <span class="msg-detail-val">{{ m.subject }}</span>
+                </div>
+                <div class="msg-detail-row">
+                  <span class="msg-detail-label">✉️ Email</span>
+                  <span class="msg-detail-val">{{ m.email }}</span>
+                </div>
+                <div class="msg-message-box">
+                  <div class="msg-message-label">💬 Message</div>
+                  <p class="msg-message-text">{{ m.message }}</p>
+                </div>
+                <div style="margin-top:1rem">
+                  <button class="reply-btn-full"
+                          (click)="replyViaEmail(m.email, m.name, m.subject)">
+                    📧 Reply via Email to {{ m.email }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
       <div *ngIf="activeTab === 'analytics'">
         <div class="analytics-grid">
-
           <div class="chart-card">
             <div class="chart-title">📊 Complaints by Type</div>
             <div class="big-bar-chart" *ngIf="chartData.length > 0">
@@ -265,32 +426,19 @@
           <div class="chart-card span2">
             <div class="chart-title">📈 Status Summary</div>
             <div class="summary-stats">
-              <div class="sstat">
-                <div class="sstat-num blue-txt">{{ total }}</div>
-                <div class="sstat-label">Total Filed</div>
-              </div>
-              <div class="sstat">
-                <div class="sstat-num green-txt">{{ resolved }}</div>
-                <div class="sstat-label">Resolved</div>
-              </div>
-              <div class="sstat">
-                <div class="sstat-num orange-txt">{{ pending }}</div>
-                <div class="sstat-label">Pending</div>
-              </div>
-              <div class="sstat">
-                <div class="sstat-num purple-txt">{{ inProgress }}</div>
-                <div class="sstat-label">In Progress</div>
-              </div>
-              <div class="sstat">
-                <div class="sstat-num green-txt">{{ getResolutionRate() }}%</div>
-                <div class="sstat-label">Resolution Rate</div>
-              </div>
+              <div class="sstat"><div class="sstat-num blue-txt">{{ total }}</div><div class="sstat-label">Total Filed</div></div>
+              <div class="sstat"><div class="sstat-num green-txt">{{ resolved }}</div><div class="sstat-label">Resolved</div></div>
+              <div class="sstat"><div class="sstat-num orange-txt">{{ pending }}</div><div class="sstat-label">Pending</div></div>
+              <div class="sstat"><div class="sstat-num purple-txt">{{ inProgress }}</div><div class="sstat-label">In Progress</div></div>
+              <div class="sstat"><div class="sstat-num green-txt">{{ getResolutionRate() }}%</div><div class="sstat-label">Resolution Rate</div></div>
+              <div class="sstat"><div class="sstat-num" style="color:#ef4444">{{ messages.length }}</div><div class="sstat-label">Total Messages</div></div>
+              <div class="sstat"><div class="sstat-num" style="color:#ef4444">{{ unreadCount }}</div><div class="sstat-label">Unread Messages</div></div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ══════════ TAB: SETTINGS ══════════ -->
+      
       <div *ngIf="activeTab === 'settings'">
         <div class="settings-grid">
           <div class="settings-card">

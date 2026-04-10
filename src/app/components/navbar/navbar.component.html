@@ -1,13 +1,17 @@
-<nav>
+﻿<nav>
   <a routerLink="/home" class="nav-brand">
     <div class="nav-logo">🏛️</div>
     <span class="nav-name">ComplaintApp</span>
   </a>
+
   <div class="nav-links">
-    <a routerLink="/home"      class="nav-link" routerLinkActive="active">Home</a>
-    <a routerLink="/complaint" class="nav-link" routerLinkActive="active">Complaint</a>
-    <a routerLink="/status"    class="nav-link" routerLinkActive="active">Status</a>
-    <a href="#about-section"   class="nav-link">About Us</a>
+    <a routerLink="/home"        class="nav-link" routerLinkActive="active">Home</a>
+    <a routerLink="/complaint"   class="nav-link" routerLinkActive="active">Complaint</a>
+    <a routerLink="/status"      class="nav-link" routerLinkActive="active">Status</a>
+    <a *ngIf="isLoggedIn" routerLink="/my-complaints" class="nav-link" routerLinkActive="active">My Complaints</a>
+    <a routerLink="/about"       class="nav-link" routerLinkActive="active">About Us</a>
+    <a routerLink="/contact-us"  class="nav-link" routerLinkActive="active">Contact Us</a>
+
     <a *ngIf="!isLoggedIn" routerLink="/login" class="btn-login">🔐 Login</a>
     <button *ngIf="isLoggedIn" class="btn-logout" (click)="logout()">🚪 Logout</button>
   </div>

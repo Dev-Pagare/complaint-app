@@ -1,0 +1,118 @@
+﻿
+<section class="contact-hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">📬 Contact Us</div>
+    <h1>Get in <span class="highlight">Touch</span></h1>
+    <p>Have any complaints, suggestions, or questions? The Surat Municipal Corporation team is ready to help you.</p>
+  </div>
+</section>
+
+<section class="info-section">
+  <div class="container">
+    <div class="info-cards">
+      <div class="info-card" *ngFor="let office of smcOffices">
+        <div class="info-icon">{{ office.icon }}</div>
+        <h3>{{ office.title }}</h3>
+        <p class="info-address">{{ office.address }}</p>
+        <p class="info-timing">🕐 {{ office.timing }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="main-section">
+  <div class="container two-col">
+
+    
+    <div class="form-panel">
+      <h2 class="section-title">Send a Message</h2>
+      <p class="section-sub">Your message will be directly sent to the SMC team.</p>
+
+      <div class="contact-form" *ngIf="!isSubmitted">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Your Name *</label>
+            <input type="text" [(ngModel)]="formData.name" placeholder="Enter your full name" />
+          </div>
+          <div class="form-group">
+            <label>Email Address *</label>
+            <input type="email" [(ngModel)]="formData.email" placeholder="yourname@example.com" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Mobile Number</label>
+            <input type="tel"
+            [(ngModel)]="formData.phone"
+            placeholder="10-digit mobile number"
+            maxlength="10" />
+          </div>
+          <div class="form-group">
+            <label>Subject</label>
+            <select [(ngModel)]="formData.subject">
+              <option value="">-- Select Subject --</option>
+              <option>Regarding Complaint</option>
+              <option>Technical Issue</option>
+              <option>About SMC Services</option>
+              <option>Suggestion / Feedback</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Your Message *</label>
+          <textarea
+            [(ngModel)]="formData.message"
+            rows="5"
+            placeholder="Write your message here..."
+          ></textarea>
+        </div>
+
+        <p class="error-msg" *ngIf="errorMessage">⚠ {{ errorMessage }}</p>
+
+        <button class="submit-btn" (click)="onSubmit()" [disabled]="isLoading">
+          <span *ngIf="!isLoading">📨 Send Message</span>
+          <span *ngIf="isLoading" class="loading-dots">
+            <span></span><span></span><span></span>
+          </span>
+        </button>
+      </div>
+
+      
+      <div class="success-box" *ngIf="isSubmitted">
+        <div class="success-emoji">✅</div>
+        <h3>Message Sent!</h3>
+        <p>Thank you, <strong>{{ formData.name }}</strong>! Your message has been received by the SMC team.<br/>
+           We will respond within 1–2 working days.</p>
+        <button class="reset-btn" (click)="resetForm()">Send New Enquiry</button>
+      </div>
+    </div>
+
+    
+    <div class="map-panel">
+      <h2 class="section-title">Our Office Address</h2>
+      <p class="section-sub">Surat Municipal Corporation — Headquarters</p>
+      <div class="map-wrapper">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3719.4779657097377!2d72.83025!3d21.19504!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be04e6c48f50d9d%3A0x9e617c6b2b63a2f0!2sSurat%20Municipal%20Corporation!5e0!3m2!1sen!2sin!4v1700000000000"
+          width="100%"
+          height="320"
+          style="border:0; border-radius: 12px;"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+      <div class="address-box">
+        <p>📍 <strong>Address:</strong> Muglisara, Surat — 395001, Gujarat, India</p>
+        <p>🕐 <strong>Office Hours:</strong> Monday – Saturday, 10:30 AM – 6:00 PM</p>
+        <p>📞 <strong>Helpline:</strong> 1800-233-7779 (Toll-Free)</p>
+        <p>✉️ <strong>Email:</strong> commissioner&#64;suratmunicipal.gov.in</p>
+      </div>
+    </div>
+
+  </div>
+</section>

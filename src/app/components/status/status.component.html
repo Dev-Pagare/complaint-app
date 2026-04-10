@@ -1,8 +1,8 @@
-<div class="status-page">
+﻿<div class="status-page">
 
   <div class="status-hero">
     <div class="hero-icon">🔍</div>
-    <h1 class="hero-title">Track Your Complaint</h1>
+    <h1 class="hero-title">Track Your <span class="highlight">Complaint</span></h1>
     <p class="hero-sub">Enter your mobile number to find all your complaints and their current status</p>
   </div>
 
@@ -21,10 +21,10 @@
     </div>
   </div>
 
-  <!-- Results -->
+  
   <div class="results-section" *ngIf="searched">
 
-    <!-- Found -->
+    
     <div *ngIf="results.length > 0">
       <div class="results-header">
         ✅ Found <strong>{{ results.length }}</strong> complaint(s) for {{ mobile }}
@@ -61,7 +61,7 @@
       </div>
     </div>
 
-    <!-- Not Found -->
+    
     <div class="not-found" *ngIf="results.length === 0">
       <div class="nf-icon">😕</div>
       <div class="nf-title">No complaints found</div>

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
 
 :root {
   --ink: #0a0f1e;
@@ -47,7 +47,6 @@ body {
   100% { transform: scaleY(0); transform-origin: bottom; }
 }
 
-/* Shared badges used across components */
 .status-badge {
   display: inline-flex; align-items: center; gap: 5px;
   font-size: 12px; font-weight: 600;
@@ -69,7 +68,6 @@ body {
   background: var(--accent-light); padding: 3px 8px; border-radius: 6px;
 }
 
-/* Shared form elements */
 .field-input, .field-select, .field-textarea {
   font-family: 'DM Sans', sans-serif;
   font-size: 15px; color: var(--ink);

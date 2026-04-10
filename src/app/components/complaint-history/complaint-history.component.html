@@ -1,0 +1,64 @@
+﻿<div class="history-page">
+
+  
+  <section class="history-hero">
+    <div class="hero-grid-bg"></div>
+    <div class="history-hero-inner">
+      <div class="history-badge">📜 My Account</div>
+      <h1>My <span class="highlight">Complaints</span></h1>
+      <p>All complaints registered with your account ({{ userEmail }})</p>
+    </div>
+  </section>
+
+  
+  <div class="hist-content">
+
+    
+    <div class="hist-loading" *ngIf="loading">
+      <div class="spinner"></div>
+      <p>Loading your complaints...</p>
+    </div>
+
+    
+    <div class="hist-empty" *ngIf="!loading && complaints.length === 0">
+      <div class="empty-icon">📭</div>
+      <h3>No complaints yet</h3>
+      <p>You haven't registered any complaints with this account.</p>
+      <a routerLink="/complaint" class="btn-file">📋 File a Complaint</a>
+    </div>
+
+    
+    <div class="hist-list" *ngIf="!loading && complaints.length > 0">
+      <div class="hist-summary">
+        <span class="sum-total">{{ complaints.length }} Total</span>
+        <span class="sum-chip resolved">✅ {{ complaints | countByStatus:'Resolved' }} Resolved</span>
+        <span class="sum-chip inprogress">🔄 {{ complaints | countByStatus:'In Progress' }} In Progress</span>
+        <span class="sum-chip pending">⏳ {{ complaints | countByStatus:'Pending' }} Pending</span>
+      </div>
+
+      <div class="hist-card" *ngFor="let c of complaints">
+        <div class="hcard-top">
+          <div class="hcard-left">
+            <span class="hcard-id">{{ c.id }}</span>
+            <span class="priority-dot"
+                  [style.background]="getPriorityColor(c.priority)"
+                  [title]="c.priority + ' Priority'">
+            </span>
+            <span class="hcard-type">{{ c.type }}</span>
+          </div>
+          <span class="status-badge" [ngClass]="getStatusClass(c.status)">{{ c.status }}</span>
+        </div>
+        <div class="hcard-body">
+          <div class="hcard-row"><span class="hcard-label">📍 Area</span><span>{{ c.area }}</span></div>
+          <div class="hcard-row" *ngIf="c.description"><span class="hcard-label">📝 Description</span><span>{{ c.description }}</span></div>
+          <div class="hcard-row" *ngIf="c.dueDate"><span class="hcard-label">📅 Due Date</span><span>{{ c.dueDate }}</span></div>
+        </div>
+        <div class="hcard-footer">
+          <span class="hcard-date">🗓 Filed: {{ c.date }}</span>
+          <a [routerLink]="['/status']" [queryParams]="{ id: c.id }" class="track-link">Track →</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

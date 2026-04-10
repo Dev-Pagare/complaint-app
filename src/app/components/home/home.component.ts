@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
+import { db } from '../../firebase.config';
+import { collection, onSnapshot } from 'firebase/firestore';
 
 @Component({
   selector: 'app-home',
@@ -8,17 +10,32 @@ import { RouterModule, Router } from '@angular/router';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   total = 0; resolved = 0; inProgress = 0; pending = 0;
+  private unsub: any;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
-    const c = JSON.parse(localStorage.getItem('complaints') || '[]');
-    this.total      = c.length;
-    this.resolved   = c.filter((x: any) => x.status === 'Resolved').length;
-    this.inProgress = c.filter((x: any) => x.status === 'In Progress').length;
-    this.pending    = c.filter((x: any) => x.status === 'Pending').length;
+    try {
+      this.unsub = onSnapshot(collection(db, 'complaints'), (snap) => {
+        const data = snap.docs.map(d => d.data());
+        this.total = data.length;
+        this.resolved = data.filter((c: any) => c.status === 'Resolved').length;
+        this.inProgress = data.filter((c: any) => c.status === 'In Progress').length;
+        this.pending = data.filter((c: any) => c.status === 'Pending').length;
+      });
+    } catch {
+      const local = JSON.parse(localStorage.getItem('complaints') || '[]');
+      this.total = local.length;
+      this.resolved = local.filter((c: any) => c.status === 'Resolved').length;
+      this.inProgress = local.filter((c: any) => c.status === 'In Progress').length;
+      this.pending = local.filter((c: any) => c.status === 'Pending').length;
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.unsub) this.unsub();
   }
 
   goToComplaint(type: string) {
